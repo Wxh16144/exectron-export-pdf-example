@@ -2,8 +2,6 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'">
     <link href="./styles.css" rel="stylesheet">
     <title>Hello World!</title>
   </head>
@@ -13,6 +11,18 @@
     Chromium <span id="chrome-version"></span>,
     and Electron <span id="electron-version"></span>.
 
+    <!-- print PDF -->
+    <div>
+      <input type="text" id="url" value="https://www.wxhboy.cn">
+      <button id="print-pdf">Print PDF</button>
+    </div>
+    <script type="text/javascript">
+      const printPDFBtn = document.getElementById('print-pdf');
+      printPDFBtn.addEventListener('click', () => {
+        const url = document.getElementById('url').value;
+        window.open(url);
+      });
+    </script>
     <!-- You can also require other files to run in this process -->
     <script src="./renderer.js"></script>
   </body>

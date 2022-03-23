@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow} = require('electron')
+const { app, BrowserWindow, dialog } = require('electron')
 const path = require('path')
 const os = require('os')
 const fs = require('fs')
@@ -17,16 +17,51 @@ function createWindow () {
   // and load the index.html of the app.
   mainWindow.loadFile('index.html')
 
-  mainWindow.webContents.on('did-finish-load', () => {
-    // Use default printing options
-    const pdfPath = path.join(os.homedir(), 'Desktop', 'temp.pdf')
-    mainWindow.webContents.printToPDF({}).then(data => {
-      fs.writeFile(pdfPath, data, (error) => {
-        if (error) throw error
-        console.log(`Wrote PDF successfully to ${pdfPath}`)
-      })
-    }).catch(error => {
-      console.log(`Failed to write PDF to ${pdfPath}: `, error)
+  mainWindow.webContents.setWindowOpenHandler((details) => {
+    return {
+      action: 'allow',
+      overrideBrowserWindowOptions: {
+        show: false, // 不显示窗口可以静默打印
+      }
+    };
+  })
+
+  mainWindow.webContents.on('did-create-window', (event, details) => {
+    event.webContents.once('did-finish-load', () => {
+      const { url } = details
+      const { host } = new URL(url)
+      dialog
+        .showSaveDialog(mainWindow, {
+          title: '保存文件',
+          defaultPath: path.join(os.homedir(), 'Desktop', `${host}.pdf`),
+        })
+        .then(file => Promise.resolve(file.filePath))
+        .then((filePath) => {
+          event.webContents
+            .printToPDF({
+              printBackground: true,
+              pageSize: 'A4'
+            })
+            .then((data) =>
+              fs.writeFileSync(filePath, data)
+            ).then(() => {
+              dialog.showMessageBox(mainWindow, {
+                type: 'info',
+                title: '提示',
+                message: '保存成功',
+              })
+            })
+            .catch(err => {
+              dialog.showMessageBox(mainWindow, {
+                type: 'error',
+                title: '错误',
+                message: err.message,
+              })
+            })
+            .finally(() => {
+              event.close()
+            })
+        })
     })
   })
 
