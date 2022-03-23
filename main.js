@@ -1,6 +1,8 @@
 // Modules to control application life and create native browser window
 const {app, BrowserWindow} = require('electron')
 const path = require('path')
+const os = require('os')
+const fs = require('fs')
 
 function createWindow () {
   // Create the browser window.
@@ -14,6 +16,19 @@ function createWindow () {
 
   // and load the index.html of the app.
   mainWindow.loadFile('index.html')
+
+  mainWindow.webContents.on('did-finish-load', () => {
+    // Use default printing options
+    const pdfPath = path.join(os.homedir(), 'Desktop', 'temp.pdf')
+    mainWindow.webContents.printToPDF({}).then(data => {
+      fs.writeFile(pdfPath, data, (error) => {
+        if (error) throw error
+        console.log(`Wrote PDF successfully to ${pdfPath}`)
+      })
+    }).catch(error => {
+      console.log(`Failed to write PDF to ${pdfPath}: `, error)
+    })
+  })
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
