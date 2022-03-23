@@ -1,12 +1,12 @@
 {
-  "name": "electron-quick-start",
+  "name": "exectron-export-pdf-example",
   "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "description": "exectron-export-pdf-example",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
   },
-  "repository": "https://github.com/electron/electron-quick-start",
+  "repository": "https://github.com/wxh16144/exectron-export-pdf-example",
   "keywords": [
     "Electron",
     "quick",
@@ -14,8 +14,8 @@
     "tutorial",
     "demo"
   ],
-  "author": "GitHub",
-  "license": "CC0-1.0",
+  "author": "Wuxh",
+  "license": "MIT",
   "devDependencies": {
     "electron": "^17.1.2"
   }
