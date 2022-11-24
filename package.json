@@ -17,6 +17,6 @@
   "author": "Wuxh",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^17.1.2"
+    "electron": "^21.3.1"
   }
 }
